@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2023-11-16T16:53:17 IST" name="Default suite" finished-at="2023-11-16T16:53:19 IST" duration-ms="2012">
+    <groups>
+    </groups>
+    <test started-at="2023-11-16T16:53:17 IST" name="Default test" finished-at="2023-11-16T16:53:19 IST" duration-ms="2012">
+      <class name="CollectBot.LoginWithPojo">
+        <test-method signature="login()[pri:0, instance:CollectBot.LoginWithPojo@3febb011]" started-at="2023-11-16T16:53:17 IST" name="login" finished-at="2023-11-16T16:53:19 IST" duration-ms="1976" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+      </class> <!-- CollectBot.LoginWithPojo -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
