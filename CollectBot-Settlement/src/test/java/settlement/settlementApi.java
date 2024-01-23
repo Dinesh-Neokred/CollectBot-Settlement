@@ -90,7 +90,7 @@ public class settlementApi extends login {
                 ;
 
                 // Reading debited balanace for Client before hitting Settlement API
-                double beforeDebitBalance = Balance.getBeforeDebitBalance(clientId);
+                double beforeDebitBalance = Balance.getBeforeDebitBalance(clientId, auth);
 
                 // Storing before Debited balance In The excel File
                 data.getRow(1 + i).getCell(14).setCellValue(beforeDebitBalance);
@@ -99,7 +99,7 @@ public class settlementApi extends login {
                 createSettlementApi.then().log().all();
 
                 // Storing After Debited balance In The excel File
-                double aftereDebitBalance = Balance.getAfterDebitBalance(clientId);
+                double aftereDebitBalance = Balance.getAfterDebitBalance(clientId, auth);
                 data.getRow(1 + i).getCell(15).setCellValue(aftereDebitBalance);
 
                 String settlementMessage = createSettlementApi.jsonPath().getString("message");
