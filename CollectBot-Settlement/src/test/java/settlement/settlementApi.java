@@ -46,14 +46,14 @@ public class settlementApi extends login {
         login token = new login();
 
         // Importing Settlement Sheet For Reading Settlement Details
-        filePath = "C:\\Users\\Dinesh\\Downloads\\18.Fino Settlement 18th Jan-2024.xlsx";
+        filePath = "C:\\Users\\Dinesh\\Downloads\\22.Fino Settlement 22nd Jan-2024 (1).xlsx";
         fis = new FileInputStream(filePath);
         book = WorkbookFactory.create(fis);
         data = book.getSheet("userID");
         int LastRowNumber = data.getLastRowNum();
 
         // Creating Loop for Reading Multiple data and Creating Multiple Settlement
-        for (int i = 0; i < LastRowNumber - 1; i++) {
+        for (int i = 0; i < LastRowNumber; i++) {
             auth = token.getAuth("admin@neokred.tech", "Neokred@12345");
             settlementDate.setSettlementData(i, filePath);
             clientId = settlementDate.clientId;
