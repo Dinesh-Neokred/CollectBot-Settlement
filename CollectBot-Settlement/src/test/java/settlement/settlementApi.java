@@ -17,18 +17,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 public class settlementApi extends login {
-    public static String baseUrl = "https://collectbot.neokred.tech/core-svc/api/v1/";
-    public static int amount;
-    public static String clientId;
-    public static String programId;
-    public static String dateRange;
-    public static double collectedAmount;
-    public static double settledAmount;
-    public static double commissionAmount;
-    public static double commissionGstAmount;
-    public static String utr;
-    public static double rollingReserve;
-    public static String serviceProviderName;
+
     public static FileInputStream fis;
     public static Workbook book;
     public static Sheet data;
@@ -39,6 +28,7 @@ public class settlementApi extends login {
 
     @Test
     public void createSettlement() throws EncryptedDocumentException, IOException {
+        String baseUrl = "https://collectbot.neokred.tech/core-svc/api/v1/";
 
         // Creating Class For calling Methods
         ReadingSettlementData settlementDate = new ReadingSettlementData();
@@ -46,7 +36,7 @@ public class settlementApi extends login {
         login token = new login();
 
         // Importing Settlement Sheet For Reading Settlement Details
-        filePath = "C:\\Users\\Dinesh\\Downloads\\22.Fino Settlement 22nd Jan-2024 (1).xlsx";
+        filePath = "C:\\Users\\Dinesh\\Downloads\\23.Fino Settlement 23rd Jan-2024.xlsx";
         fis = new FileInputStream(filePath);
         book = WorkbookFactory.create(fis);
         data = book.getSheet("userID");
@@ -58,16 +48,17 @@ public class settlementApi extends login {
             // Generating Auth Token with collectbot Credentials
             auth = token.getAuth("admin@neokred.tech", "Neokred@12345");
             settlementDate.setSettlementData(i, filePath);
-            clientId = settlementDate.clientId;
-            programId = settlementDate.programId;
-            dateRange = settlementDate.dateRange;
-            collectedAmount = settlementDate.collectedAmount;
-            settledAmount = settlementDate.settledAmount;
-            commissionAmount = settlementDate.commissionAmount;
-            commissionGstAmount = settlementDate.commissionGstAmount;
-            utr = settlementDate.utr;
-            rollingReserve = settlementDate.rollingReserve;
-            serviceProviderName = settlementDate.serviceProviderName;
+
+            String clientId = settlementDate.clientId;
+            String programId = settlementDate.programId;
+            String dateRange = settlementDate.dateRange;
+            double collectedAmount = settlementDate.collectedAmount;
+            double settledAmount = settlementDate.settledAmount;
+            double commissionAmount = settlementDate.commissionAmount;
+            double commissionGstAmount = settlementDate.commissionGstAmount;
+            String utr = settlementDate.utr;
+            double rollingReserve = settlementDate.rollingReserve;
+            String serviceProviderName = settlementDate.serviceProviderName;
 
             if (settledAmount > 0) {
                 requestPayload = given()
@@ -84,8 +75,7 @@ public class settlementApi extends login {
                         .header("reserves", rollingReserve)
                         .header("serviceProviderName", serviceProviderName)
                         .header("servicetype", "Payin")
-                // .log().all()
-                ;
+                        .log().all();
 
                 // Reading debited balanace for Client before hitting Settlement API
                 double beforeDebitBalance = Balance.getBeforeDebitBalance(clientId, auth);
