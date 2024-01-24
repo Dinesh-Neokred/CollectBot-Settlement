@@ -54,6 +54,8 @@ public class settlementApi extends login {
 
         // Creating Loop for Reading Multiple data and Creating Multiple Settlement
         for (int i = 0; i < LastRowNumber; i++) {
+
+            // Generating Auth Token with collectbot Credentials
             auth = token.getAuth("admin@neokred.tech", "Neokred@12345");
             settlementDate.setSettlementData(i, filePath);
             clientId = settlementDate.clientId;
@@ -67,12 +69,8 @@ public class settlementApi extends login {
             rollingReserve = settlementDate.rollingReserve;
             serviceProviderName = settlementDate.serviceProviderName;
 
-            /// amount = Integer.valueOf(settledAmount);
-
             if (settledAmount > 0) {
                 requestPayload = given()
-                        // .log()
-                        // .all()
                         .contentType("application/json")
                         .headers("Authorization", auth)
                         .header("client_id", clientId)
@@ -95,6 +93,7 @@ public class settlementApi extends login {
                 // Storing before Debited balance In The excel File
                 data.getRow(1 + i).getCell(14).setCellValue(beforeDebitBalance);
 
+                // Calling or hitting Create Settlement API For Record Create
                 Response createSettlementApi = requestPayload.when().get(baseUrl + "finance/settlement/record/create");
                 createSettlementApi.then().log().all();
 
@@ -102,6 +101,7 @@ public class settlementApi extends login {
                 double aftereDebitBalance = Balance.getAfterDebitBalance(clientId, auth);
                 data.getRow(1 + i).getCell(15).setCellValue(aftereDebitBalance);
 
+                // Stroing The Response Message Of Create Settlement API For Record Create
                 String settlementMessage = createSettlementApi.jsonPath().getString("message");
 
                 // Storing Settlement API Response in the Excel File
@@ -126,12 +126,13 @@ public class settlementApi extends login {
                             .header("serviceProviderName", serviceProviderName)
                             .header("servicetype", "Payin");
 
+                    // Calling or hitting Create Revenue API For Record Create
                     Response createRevenueApi = requestPayloadforRevenue.when()
                             .get(baseUrl + "finance/revenue/record/create");
-                    createRevenueApi.then()
-                            .log().all();
+                    createRevenueApi.then().log().all();
+
+                    // Storing Revenue API Response in the Excel File
                     String createRevenueResponse = createRevenueApi.jsonPath().get().toString();
-                    // Sheet data = book.getSheet("userID");
                     data.getRow(1 + i).getCell(19).setCellValue(createRevenueResponse);
                 }
 
