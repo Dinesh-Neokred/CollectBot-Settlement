@@ -6,6 +6,12 @@ import static org.hamcrest.Matchers.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
 import javax.mail.internet.AddressException;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -36,7 +42,7 @@ public class settlementApi extends login {
         login token = new login();
 
         // Importing Settlement Sheet For Reading Settlement Details
-        filePath = "C:\\Users\\Dinesh\\Downloads\\23.Fino Settlement 23rd Jan-2024.xlsx";
+        filePath = "C:\\Users\\Dinesh\\Downloads\\27.Fino Settlement 27th Jan-2024.xlsx";
         fis = new FileInputStream(filePath);
         book = WorkbookFactory.create(fis);
         data = book.getSheet("userID");
@@ -75,7 +81,8 @@ public class settlementApi extends login {
                         .header("reserves", rollingReserve)
                         .header("serviceProviderName", serviceProviderName)
                         .header("servicetype", "Payin")
-                        .log().all();
+                // .log().all()
+                ;
 
                 // Reading debited balanace for Client before hitting Settlement API
                 double beforeDebitBalance = Balance.getBeforeDebitBalance(clientId, auth);
@@ -135,8 +142,16 @@ public class settlementApi extends login {
         System.out.println("Settlement Created SuccessFully");
         EmailSenderForSettlement email = new EmailSenderForSettlement();
 
+        Instant now = Instant.now();
+        Instant yesterday = now.minus(1, ChronoUnit.DAYS);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate todayDate = now.atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate yesterdayDate = yesterday.atZone(ZoneId.systemDefault()).toLocalDate();
+        String yesterdayDateWithoutTime = yesterdayDate.format(formatter);
+        System.out.println(yesterdayDate);
+
         try {
-            email.sendMailWithAttachment(filePath, "admin@neokred.tech", "Neokred@12345");
+            email.sendMailWithAttachment(filePath, "admin@neokred.tech", "Neokred@12345", yesterdayDateWithoutTime);
         } catch (AddressException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

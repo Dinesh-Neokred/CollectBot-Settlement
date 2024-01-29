@@ -24,7 +24,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class EmailSenderForSettlement {
 
-    public void sendMailWithAttachment(String path, String mail, String pass)
+    public void sendMailWithAttachment(String path, String mail, String pass, String date)
             throws EncryptedDocumentException, IOException, AddressException {
 
         Instant now = Instant.now();
@@ -99,7 +99,7 @@ public class EmailSenderForSettlement {
             message.addRecipient(Message.RecipientType.CC, ccAddress4);
 
             // Set email subject
-            message.setSubject("Settlement Record is Created For the date " + yesterdayDateWithoutTime);
+            message.setSubject("Settlement Record is Created For the date " + date);
 
             // Create the message part
             BodyPart messageBodyPart = new MimeBodyPart();
@@ -118,7 +118,7 @@ public class EmailSenderForSettlement {
 
             DataSource source = new FileDataSource(dailyReport);
             attachmentPart.setDataHandler(new DataHandler(source));
-            String attachmentFileName = yesterdayDateWithoutTime + " SettlementSheet.xlsx";
+            String attachmentFileName = date + " SettlementSheet.xlsx";
             attachmentPart.setFileName(attachmentFileName);
 
             // attachmentPart.setFileName(dailyReport);
