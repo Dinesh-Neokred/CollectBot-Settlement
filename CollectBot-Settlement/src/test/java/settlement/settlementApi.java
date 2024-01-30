@@ -34,6 +34,9 @@ public class settlementApi extends login {
 
     @Test
     public void createSettlement() throws EncryptedDocumentException, IOException {
+
+        String mail = "";
+        String mailPassword = "";
         String baseUrl = "https://collectbot.neokred.tech/core-svc/api/v1/";
 
         // Creating Class For calling Methods
@@ -151,7 +154,7 @@ public class settlementApi extends login {
         System.out.println(yesterdayDate);
 
         try {
-            email.sendMailWithAttachment(filePath, "admin@neokred.tech", "Neokred@12345", yesterdayDateWithoutTime);
+            email.sendMailWithAttachment(filePath, mail, mailPassword, yesterdayDateWithoutTime);
         } catch (AddressException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
