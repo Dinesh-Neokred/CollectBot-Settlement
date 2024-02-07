@@ -1,8 +1,6 @@
 package settlement;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,6 +66,7 @@ public class settlementApi extends login {
             String utr = settlementDate.utr;
             double rollingReserve = settlementDate.rollingReserve;
             String serviceProviderName = settlementDate.serviceProviderName;
+            String servicetype = settlementDate.serviceType.toLowerCase();
 
             if (settledAmount > 0) {
                 requestPayload = given()
@@ -83,7 +82,8 @@ public class settlementApi extends login {
                         .header("utr", utr)
                         .header("reserves", rollingReserve)
                         .header("serviceProviderName", serviceProviderName)
-                        .header("servicetype", "Payin")
+                        // .header("servicetype", "Payin")
+                        .header("servicetype", servicetype);
                 // .log().all()
                 ;
 
@@ -124,7 +124,8 @@ public class settlementApi extends login {
                             .header("totalcommissionamount", commissionAmount)
                             .header("totalcommissiongst", commissionGstAmount)
                             .header("serviceProviderName", serviceProviderName)
-                            .header("servicetype", "Payin");
+                            // .header("servicetype", "Payin");
+                            .header("servicetype", servicetype);
 
                     // Calling or hitting Create Revenue API For Record Create
                     Response createRevenueApi = requestPayloadforRevenue.when()
@@ -148,7 +149,6 @@ public class settlementApi extends login {
         Instant now = Instant.now();
         Instant yesterday = now.minus(1, ChronoUnit.DAYS);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate todayDate = now.atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate yesterdayDate = yesterday.atZone(ZoneId.systemDefault()).toLocalDate();
         String yesterdayDateWithoutTime = yesterdayDate.format(formatter);
         System.out.println(yesterdayDate);

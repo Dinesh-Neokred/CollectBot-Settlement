@@ -20,6 +20,7 @@ public class ReadingSettlementData {
     public static double rollingReserve;
     public static String serviceProviderName;
     public static double commissionGstAmount;
+    public static String serviceType;
     public static double commissionAmount;
     public static double settledAmount;
     public static double collectedAmount;
@@ -48,6 +49,7 @@ public class ReadingSettlementData {
         serviceProviderName = data.getRow(1 + number).getCell(16).getStringCellValue();
         rollingReserve = data.getRow(1 + number).getCell(17).getNumericCellValue();
         utr = data.getRow(1 + number).getCell(11).getStringCellValue();
+        serviceType = data.getRow(1 + number).getCell(20).getStringCellValue();
         System.out.println(utr);
     }
 
