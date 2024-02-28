@@ -42,15 +42,16 @@ public class settlementApi extends login {
         ReadAndWriteBeforeSettlememtBalance Balance = new ReadAndWriteBeforeSettlememtBalance();
         login token = new login();
 
-        // Importing Settlement Sheet For Reading Settlement Details
-        filePath = "C:\\Users\\Dinesh\\Downloads\\27.Fino Settlement 27th Jan-2024.xlsx";
-        fis = new FileInputStream(filePath);
-        book = WorkbookFactory.create(fis);
-        data = book.getSheet("userID");
-        int LastRowNumber = data.getLastRowNum();
+        int LastRowNumber = 1;
 
         // Creating Loop for Reading Multiple data and Creating Multiple Settlement
         for (int i = 0; i < LastRowNumber; i++) {
+            // Importing Settlement Sheet For Reading Settlement Details
+            filePath = "C:\\Users\\Dinesh\\Downloads\\25.Fino Settlement  27th Feb-2024 (1).xlsx";
+            fis = new FileInputStream(filePath);
+            book = WorkbookFactory.create(fis);
+            data = book.getSheet("userID");
+            LastRowNumber = data.getLastRowNum();
 
             // Generating Auth Token with collectbot Credentials
             auth = token.getAuth("admin@neokred.tech", "Neokred@12345");
@@ -103,6 +104,9 @@ public class settlementApi extends login {
 
                 // Stroing The Response Message Of Create Settlement API For Record Create
                 String settlementMessage = createSettlementApi.jsonPath().getString("message");
+                System.out.println();
+                System.out.println(settlementMessage + "<================settlementMessage=============>");
+                System.out.println();
 
                 // Storing Settlement API Response in the Excel File
                 String response = createSettlementApi.jsonPath().get().toString();
@@ -138,11 +142,11 @@ public class settlementApi extends login {
                 }
 
             }
-
+            FileOutputStream fos = new FileOutputStream(filePath);
+            book.write(fos);
+            book.close();
         }
-        FileOutputStream fos = new FileOutputStream(filePath);
-        book.write(fos);
-        book.close();
+
         System.out.println("Settlement Created SuccessFully");
         EmailSenderForSettlement email = new EmailSenderForSettlement();
 
