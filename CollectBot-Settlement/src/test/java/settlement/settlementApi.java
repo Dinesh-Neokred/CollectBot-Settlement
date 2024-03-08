@@ -47,7 +47,7 @@ public class settlementApi extends login {
         // Creating Loop for Reading Multiple data and Creating Multiple Settlement
         for (int i = 0; i < LastRowNumber; i++) {
             // Importing Settlement Sheet For Reading Settlement Details
-            filePath = "C:\\Users\\Dinesh\\Downloads\\test.xlsx";
+            filePath = "C:\\Users\\Dinesh\\Downloads\\25.Fino Settlement  27th Feb-2024 (1).xlsx";
             fis = new FileInputStream(filePath);
             book = WorkbookFactory.create(fis);
             data = book.getSheet("userID");
@@ -68,41 +68,6 @@ public class settlementApi extends login {
             double rollingReserve = settlementDate.rollingReserve;
             String serviceProviderName = settlementDate.serviceProviderName;
             String servicetype = settlementDate.serviceType.toLowerCase();
-
-            if (clientId.isEmpty()) {
-                break;
-            }
-            else if(programId.isEmpty()){
-                break;
-            }
-            else if(dateRange.isEmpty()){
-                break;
-            }
-           /*  else if(collectedAmount==0.0){
-                break;
-            }
-            else if(settledAmount==0.0){
-                break;
-            }
-            else if(commissionAmount==0.0){
-                break;
-            }
-            else if(commissionGstAmount==0.0){
-                break;
-            }
-            else if(rollingReserve==0.0){
-                break;
-            }*/
-            else if(utr.isEmpty()){
-                break;
-            }
-            else if(serviceProviderName.isEmpty()){
-                break;
-            }
-            else if(servicetype.isEmpty()){
-                break;
-            }
-
 
             if (settledAmount > 0) {
                 requestPayload = given()
