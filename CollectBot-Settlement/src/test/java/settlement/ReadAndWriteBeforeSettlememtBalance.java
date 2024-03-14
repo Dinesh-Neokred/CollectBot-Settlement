@@ -17,7 +17,8 @@ import org.testng.annotations.Test;
 import io.restassured.specification.RequestSpecification;
 
 public class ReadAndWriteBeforeSettlememtBalance extends login {
-        public static String baseUrl = "https://collectbot.neokred.tech/core-svc/api/v1/";
+        baseUrlForClass url = new baseUrlForClass();
+        String baseUrl = url.coreBaseUrl;
 
         @Test
         public double getBeforeDebitBalance(String clientId, String token)

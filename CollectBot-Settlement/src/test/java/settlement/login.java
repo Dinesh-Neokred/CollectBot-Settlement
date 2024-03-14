@@ -16,8 +16,9 @@ public class login {
 
     // @Test(priority = 0)
     public String getAuth(String email, String pass) {
+        baseUrlForClass url = new baseUrlForClass();
+        String UserBaseUrl = url.userBaseUrl;
 
-        String UserBaseUrl = "https://collectbot.neokred.tech/user-svc/api/v1/";
         JSONObject data = new JSONObject();
         // HashMap data= new HashMap();
         data.put("email", email);
