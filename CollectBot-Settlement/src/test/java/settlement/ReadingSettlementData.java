@@ -1,11 +1,7 @@
 package settlement;
 
-import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
 import org.apache.poi.ss.usermodel.CellType;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.EncryptedDocumentException;
@@ -37,7 +33,7 @@ public class ReadingSettlementData {
         filePath = path;
         FileInputStream fis = new FileInputStream(filePath);
         Workbook book = WorkbookFactory.create(fis);
-        Sheet data = book.getSheet("userID");
+        Sheet data = book.getSheet("Sheet1");
         LastRowNumber = data.getLastRowNum();
         System.out.println(number);
 
@@ -60,10 +56,6 @@ public class ReadingSettlementData {
     }
 
     private double getNumericCellValue(Cell cell) {
-
-        boolean boo_VALUE = cell != null;
-        CellType VALUE = cell.getCellType();
-        System.out.println(cell.getCellType() == CellType.NUMERIC);
 
         return (cell != null && cell.getCellType() == CellType.NUMERIC || cell.getCellType() == CellType.FORMULA)
                 ? cell.getNumericCellValue()
