@@ -3,11 +3,11 @@ package settlement;
 import static io.restassured.RestAssured.*;
 import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
-
+import org.apache.poi.ss.usermodel.CellType;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -31,7 +31,9 @@ public class ReadingSettlementData {
 
     @Test
     public void setSettlementData(int number, String path) throws EncryptedDocumentException, IOException {
-        String baseUrl = "https://collectbot.neokred.tech/core-svc/api/v1/";
+        baseUrlForClass url = new baseUrlForClass();
+        String baseUrl = url.coreBaseUrl;
+
         filePath = path;
         FileInputStream fis = new FileInputStream(filePath);
         Workbook book = WorkbookFactory.create(fis);
@@ -39,18 +41,32 @@ public class ReadingSettlementData {
         LastRowNumber = data.getLastRowNum();
         System.out.println(number);
 
-        clientId = data.getRow(1 + number).getCell(12).getStringCellValue();
-        programId = data.getRow(1 + number).getCell(13).getStringCellValue();
-        dateRange = data.getRow(1 + number).getCell(2).getStringCellValue();
-        collectedAmount = data.getRow(1 + number).getCell(3).getNumericCellValue();
-        settledAmount = data.getRow(1 + number).getCell(4).getNumericCellValue();
-        commissionAmount = data.getRow(1 + number).getCell(8).getNumericCellValue();
-        commissionGstAmount = data.getRow(1 + number).getCell(9).getNumericCellValue();
-        serviceProviderName = data.getRow(1 + number).getCell(16).getStringCellValue();
-        rollingReserve = data.getRow(1 + number).getCell(17).getNumericCellValue();
-        utr = data.getRow(1 + number).getCell(11).getStringCellValue();
-        serviceType = data.getRow(1 + number).getCell(20).getStringCellValue();
-        System.out.println(utr);
+        clientId = getStringCellValue(data.getRow(1 + number).getCell(12));
+        programId = getStringCellValue(data.getRow(1 + number).getCell(13));
+        dateRange = getStringCellValue(data.getRow(1 + number).getCell(2));
+        collectedAmount = getNumericCellValue(data.getRow(1 + number).getCell(3));
+        settledAmount = getNumericCellValue(data.getRow(1 + number).getCell(4));
+        commissionAmount = getNumericCellValue(data.getRow(1 + number).getCell(8));
+        commissionGstAmount = getNumericCellValue(data.getRow(1 + number).getCell(9));
+        serviceProviderName = getStringCellValue(data.getRow(1 + number).getCell(16));
+        rollingReserve = getNumericCellValue(data.getRow(1 + number).getCell(17));
+        utr = getStringCellValue(data.getRow(1 + number).getCell(11));
+        serviceType = getStringCellValue(data.getRow(1 + number).getCell(20));
     }
 
+    private String getStringCellValue(Cell cell) {
+        return (cell != null && cell.getCellType() == CellType.STRING) ? cell.getStringCellValue() : "";
+
+    }
+
+    private double getNumericCellValue(Cell cell) {
+
+        boolean boo_VALUE = cell != null;
+        CellType VALUE = cell.getCellType();
+        System.out.println(cell.getCellType() == CellType.NUMERIC);
+
+        return (cell != null && cell.getCellType() == CellType.NUMERIC || cell.getCellType() == CellType.FORMULA)
+                ? cell.getNumericCellValue()
+                : 0.1;
+    }
 }
