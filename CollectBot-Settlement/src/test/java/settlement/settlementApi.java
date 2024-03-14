@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Properties;
 
 import javax.mail.internet.AddressException;
 import org.apache.poi.EncryptedDocumentException;
@@ -36,9 +37,18 @@ public class settlementApi extends login {
     public void createSettlement() throws EncryptedDocumentException, IOException {
 
         baseUrlForClass url = new baseUrlForClass();
+        String envFilePath = "./.env";
 
-        String mail = "@neokred.tech";
-        String mailPassword = "";
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(envFilePath)) {
+            properties.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return; // Exit if unable to load properties
+        }
+
+        String mail = properties.getProperty("email");
+        String mailPassword = properties.getProperty("password");
         String baseUrl = url.coreBaseUrl;
 
         // Creating Class For calling Methods
