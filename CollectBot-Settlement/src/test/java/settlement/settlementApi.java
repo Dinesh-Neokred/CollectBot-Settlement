@@ -15,9 +15,11 @@ import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.json.simple.JSONObject;
 import org.testng.annotations.Test;
 
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 public class settlementApi extends login {
@@ -33,9 +35,11 @@ public class settlementApi extends login {
     @Test
     public void createSettlement() throws EncryptedDocumentException, IOException {
 
-        String mail = "";
+        baseUrlForClass url = new baseUrlForClass();
+
+        String mail = "@neokred.tech";
         String mailPassword = "";
-        String baseUrl = "https://collectbot.neokred.tech/core-svc/api/v1/";
+        String baseUrl = url.coreBaseUrl;
 
         // Creating Class For calling Methods
         ReadingSettlementData settlementDate = new ReadingSettlementData();
@@ -47,7 +51,7 @@ public class settlementApi extends login {
         // Creating Loop for Reading Multiple data and Creating Multiple Settlement
         for (int i = 0; i < LastRowNumber; i++) {
             // Importing Settlement Sheet For Reading Settlement Details
-            filePath = "C:\\Users\\Dinesh\\Downloads\\25.Fino Settlement  27th Feb-2024 (1).xlsx";
+            filePath = "D:\\New\\RestAssured\\data\\test.xlsx";
             fis = new FileInputStream(filePath);
             book = WorkbookFactory.create(fis);
             data = book.getSheet("userID");
@@ -69,7 +73,31 @@ public class settlementApi extends login {
             String serviceProviderName = settlementDate.serviceProviderName;
             String servicetype = settlementDate.serviceType.toLowerCase();
 
-            if (settledAmount > 0) {
+            if (clientId.isEmpty()) {
+                break;
+            } else if (programId.isEmpty()) {
+                break;
+            } else if (dateRange.isEmpty()) {
+                break;
+            } else if (collectedAmount == 0.1) {
+                break;
+            } else if (settledAmount == 0.1) {
+                break;
+            } else if (commissionAmount == 0.1) {
+                break;
+            } else if (commissionGstAmount == 0.1) {
+                break;
+            } else if (rollingReserve == 0.1) {
+                break;
+            } else if (utr.isEmpty()) {
+                break;
+            } else if (serviceProviderName.isEmpty()) {
+                break;
+            } else if (servicetype.isEmpty()) {
+                break;
+            }
+
+            if (settledAmount >= 1) {
                 requestPayload = given()
                         .contentType("application/json")
                         .headers("Authorization", auth)
@@ -105,16 +133,37 @@ public class settlementApi extends login {
                 // Stroing The Response Message Of Create Settlement API For Record Create
                 String settlementMessage = createSettlementApi.jsonPath().getString("message");
                 System.out.println();
-                System.out.println(settlementMessage + "<================settlementMessage=============>");
+                System.out.println(settlementMessage + "    <================settlementMessage=============>");
                 System.out.println();
 
                 // Storing Settlement API Response in the Excel File
-                String response = createSettlementApi.jsonPath().get().toString();
+                String response = createSettlementApi.jsonPath().getString("message");
                 data.getRow(1 + i).getCell(18).setCellValue(response);
 
                 // This Loop Will execute only when the Settlement Record is Created
                 // SuccessFully otherwise it will not execute the Revenue create record API
                 if (settlementMessage.equalsIgnoreCase("Settlement record created successfully")) {
+
+                    // This API will Hit only when the client is having Service type as Voucher to
+                    // debit balance From Coupon service
+
+                    if (servicetype.equalsIgnoreCase("voucher")) {
+                        JSONObject requestPayloadForVoucherObject = new JSONObject();
+
+                        String debitedAmount = String.valueOf(settledAmount * 100);
+
+                        requestPayloadForVoucherObject.put("client_ref_id", clientId);
+                        requestPayloadForVoucherObject.put("program_id", programId);
+                        requestPayloadForVoucherObject.put("debited", debitedAmount);
+
+                        RequestSpecification requestPayloadForVoucher = given().contentType("application/json")
+                                .body(requestPayloadForVoucherObject.toString()).log().all();
+                        Response responseForVoucher = requestPayloadForVoucher.when()
+                                .post("http://10.10.10.72:9018/coupon-svc/api/v1/internal/wallet/balance/debit");
+                        responseForVoucher.then().log().all();
+                        String responseForVocherMessage = responseForVoucher.jsonPath().getString("message");
+                        data.getRow(1 + i).getCell(21).setCellValue(responseForVocherMessage);
+                    }
 
                     RequestSpecification requestPayloadforRevenue = given()
                             // .log().all()
@@ -137,7 +186,7 @@ public class settlementApi extends login {
                     createRevenueApi.then().log().all();
 
                     // Storing Revenue API Response in the Excel File
-                    String createRevenueResponse = createRevenueApi.jsonPath().get().toString();
+                    String createRevenueResponse = createRevenueApi.jsonPath().getString("message");
                     data.getRow(1 + i).getCell(19).setCellValue(createRevenueResponse);
                 }
 
