@@ -49,6 +49,8 @@ public class settlementApi extends login {
 
         String mail = properties.getProperty("email");
         String mailPassword = properties.getProperty("password");
+        String mailForCB = properties.getProperty("cbMail");
+        String cbPassword = properties.getProperty("cbPassword");
         String baseUrl = url.coreBaseUrl;
 
         // Creating Class For calling Methods
@@ -68,7 +70,7 @@ public class settlementApi extends login {
             LastRowNumber = data.getLastRowNum();
 
             // Generating Auth Token with collectbot Credentials
-            auth = token.getAuth("admin@neokred.tech", "Neokred@12345");
+            auth = token.getAuth(mailForCB, cbPassword);
             settlementDate.setSettlementData(i, filePath);
 
             String clientId = settlementDate.clientId;
