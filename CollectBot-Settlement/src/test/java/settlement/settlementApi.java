@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Properties;
-
 import javax.mail.internet.AddressException;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,9 +17,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.json.simple.JSONObject;
 import org.testng.annotations.Test;
-
 import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 public class settlementApi extends login {
