@@ -15,12 +15,15 @@ import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.json.simple.JSONObject;
 import org.testng.annotations.Test;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class settlementApi extends login {
+
+    private static final Logger logger = LoggerFactory.getLogger(settlementApi.class);
 
     public static FileInputStream fis;
     public static Workbook book;
@@ -32,7 +35,7 @@ public class settlementApi extends login {
 
     @Test
     public void createSettlement() throws EncryptedDocumentException, IOException {
-
+        logger.info("Starting createSettlement method...");
         baseUrlForClass url = new baseUrlForClass();
         String envFilePath = "./.env";
 
@@ -40,6 +43,7 @@ public class settlementApi extends login {
         try (FileInputStream fis = new FileInputStream(envFilePath)) {
             properties.load(fis);
         } catch (IOException e) {
+            logger.error("An error occurred: " + e.getMessage(), e);
             e.printStackTrace();
             return; // Exit if unable to load properties
         }
@@ -50,23 +54,22 @@ public class settlementApi extends login {
         String cbPassword = properties.getProperty("cbPassword");
         String baseUrl = url.coreBaseUrl;
 
-        // Creating Class For calling Methods
         ReadingSettlementData settlementDate = new ReadingSettlementData();
         ReadAndWriteBeforeSettlememtBalance Balance = new ReadAndWriteBeforeSettlememtBalance();
         login token = new login();
 
         int LastRowNumber = 1;
 
-        // Creating Loop for Reading Multiple data and Creating Multiple Settlement
         for (int i = 0; i < LastRowNumber; i++) {
-            // Importing Settlement Sheet For Reading Settlement Details
+
+            logger.info("Processing data for row: " + i);
+
             filePath = "C:\\Users\\Dinesh\\Downloads\\test.xlsx";
             fis = new FileInputStream(filePath);
             book = WorkbookFactory.create(fis);
             Sheet data = book.getSheetAt(0);
             LastRowNumber = data.getLastRowNum();
 
-            // Generating Auth Token with collectbot Credentials
             auth = token.getAuth(mailForCB, cbPassword);
             settlementDate.setSettlementData(i, filePath);
 
@@ -83,26 +86,37 @@ public class settlementApi extends login {
             String servicetype = settlementDate.serviceType.toLowerCase();
 
             if (clientId.isEmpty()) {
+                logger.warn("clientId is empty, exiting loop.");
                 break;
             } else if (programId.isEmpty()) {
+                logger.warn("programId is empty, exiting loop.");
                 break;
             } else if (dateRange.isEmpty()) {
+                logger.warn("dateRange is empty, exiting loop.");
                 break;
             } else if (collectedAmount == 0.1) {
+                logger.warn("collectedAmount is empty, exiting loop.");
                 break;
             } else if (settledAmount == 0.1) {
+                logger.warn("settledAmount is empty, exiting loop.");
                 break;
             } else if (commissionAmount == 0.1) {
+                logger.warn("commissionAmount is empty, exiting loop.");
                 break;
             } else if (commissionGstAmount == 0.1) {
+                logger.warn("commissionGstAmount is empty, exiting loop.");
                 break;
             } else if (rollingReserve == 0.1) {
+                logger.warn("rollingReserve is empty, exiting loop.");
                 break;
             } else if (utr.isEmpty()) {
+                logger.warn("utr is empty, exiting loop.");
                 break;
             } else if (serviceProviderName.isEmpty()) {
+                logger.warn("serviceProviderName is empty, exiting loop.");
                 break;
             } else if (servicetype.isEmpty()) {
+                logger.warn("servicetype is empty, exiting loop.");
                 break;
             }
 
@@ -125,36 +139,34 @@ public class settlementApi extends login {
                 // .log().all()
                 ;
 
-                // Reading debited balanace for Client before hitting Settlement API
+                logger.info("Calling get Before DebitBalance Method...");
+
                 double beforeDebitBalance = Balance.getBeforeDebitBalance(clientId, auth);
 
-                // Storing before Debited balance In The excel File
+                logger.info("Storing Before DebitBalance In Excel...");
                 data.getRow(1 + i).getCell(14).setCellValue(beforeDebitBalance);
 
-                // Calling or hitting Create Settlement API For Record Create
+                logger.info("Calling Create Settlement API...");
                 Response createSettlementApi = requestPayload.when().get(baseUrl + "finance/settlement/record/create");
                 createSettlementApi.then().log().all();
+                logger.info("Create Settlement API response received.");
 
-                // Storing After Debited balance In The excel File
+                logger.info("Calling get Before DebitBalance Method...");
                 double aftereDebitBalance = Balance.getAfterDebitBalance(clientId, auth);
+                logger.info("Storing After DebitBalance In Excel...");
                 data.getRow(1 + i).getCell(15).setCellValue(aftereDebitBalance);
 
-                // Stroing The Response Message Of Create Settlement API For Record Create
                 String settlementMessage = createSettlementApi.jsonPath().getString("message");
                 System.out.println();
                 System.out.println(settlementMessage + "    <================settlementMessage=============>");
                 System.out.println();
 
-                // Storing Settlement API Response in the Excel File
                 String response = createSettlementApi.jsonPath().getString("message");
+                logger.info("Storing Revenue API response received In Excel");
                 data.getRow(1 + i).getCell(18).setCellValue(response);
 
-                // This Loop Will execute only when the Settlement Record is Created
-                // SuccessFully otherwise it will not execute the Revenue create record API
                 if (settlementMessage.equalsIgnoreCase("Settlement record created successfully")) {
-
-                    // This API will Hit only when the client is having Service type as Voucher to
-                    // debit balance From Coupon service
+                    logger.info("Settlement record created successfully, proceeding with Revenue API call.");
 
                     RequestSpecification requestPayloadforRevenue = given()
                             // .log().all()
@@ -171,17 +183,19 @@ public class settlementApi extends login {
                             // .header("servicetype", "Payin");
                             .header("servicetype", servicetype);
 
-                    // Calling or hitting Create Revenue API For Record Create
+                    logger.info("Calling Create Revenue API...");
                     Response createRevenueApi = requestPayloadforRevenue.when()
                             .get(baseUrl + "finance/revenue/record/create");
                     createRevenueApi.then().log().all();
+                    logger.info("Create Revenue API response received.");
 
-                    // Storing Revenue API Response in the Excel File
                     String createRevenueResponse = createRevenueApi.jsonPath().getString("message");
+                    logger.info("Storing Revenue API response received In Excel");
                     data.getRow(1 + i).getCell(19).setCellValue(createRevenueResponse);
                 }
 
             }
+            logger.info("Settlement processing completed.");
             FileOutputStream fos = new FileOutputStream(filePath);
             book.write(fos);
             book.close();
