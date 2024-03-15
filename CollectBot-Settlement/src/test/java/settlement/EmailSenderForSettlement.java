@@ -39,7 +39,15 @@ public class EmailSenderForSettlement {
         System.out.println(yesterdayDate);
 
         String filePath = path;
+        String envFilePath = "./.env";
 
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(envFilePath)) {
+            properties.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return; // Exit if unable to load properties
+        }
         File dailyReportFile = new File(filePath);
 
         String dailyReport = dailyReportFile.getAbsolutePath();
@@ -49,7 +57,7 @@ public class EmailSenderForSettlement {
         String passwordMail = pass;
 
         // Recipient's email address
-        String to = "ganesh@neokred.tech";
+        String to = properties.getProperty("to");
 
         // Sender's email address
         String from = email;
@@ -62,10 +70,10 @@ public class EmailSenderForSettlement {
         final String username = email;
         final String password = pass;
 
-        String cc1 = "karna@neokred.tech";
-        String cc2 = "accounts@neokred.tech";
-        String cc3 = "sanjay@neokred.tech";
-        String cc4 = "chandana@neokred.tech";
+        String cc1 = properties.getProperty("cc1");
+        String cc2 = properties.getProperty("cc2");
+        String cc3 = properties.getProperty("cc3");
+        String cc4 = properties.getProperty("cc4");
 
         Address ccAddress1 = new InternetAddress(cc1);
         Address ccAddress2 = new InternetAddress(cc2);
