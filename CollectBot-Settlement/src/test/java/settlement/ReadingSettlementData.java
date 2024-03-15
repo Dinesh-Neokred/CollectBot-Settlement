@@ -11,19 +11,19 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.testng.annotations.Test;
 
 public class ReadingSettlementData {
-    public static int LastRowNumber;
-    public static String utr;
-    public static double rollingReserve;
-    public static String serviceProviderName;
-    public static double commissionGstAmount;
-    public static String serviceType;
-    public static double commissionAmount;
-    public static double settledAmount;
-    public static double collectedAmount;
-    public static String dateRange;
-    public static String programId;
-    public static String clientId;
-    public static String filePath;
+    public int LastRowNumber;
+    public String utr;
+    public double rollingReserve;
+    public String serviceProviderName;
+    public double commissionGstAmount;
+    public String serviceType;
+    public double commissionAmount;
+    public double settledAmount;
+    public double collectedAmount;
+    public String dateRange;
+    public String programId;
+    public String clientId;
+    public String filePath;
 
     @Test
     public void setSettlementData(int number, String path) throws EncryptedDocumentException, IOException {
