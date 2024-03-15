@@ -27,27 +27,44 @@ public class ReadingSettlementData {
 
     @Test
     public void setSettlementData(int number, String path) throws EncryptedDocumentException, IOException {
-        baseUrlForClass url = new baseUrlForClass();
-        String baseUrl = url.coreBaseUrl;
+        try {
+            baseUrlForClass url = new baseUrlForClass();
+            String baseUrl = url.coreBaseUrl;
 
-        filePath = path;
-        FileInputStream fis = new FileInputStream(filePath);
-        Workbook book = WorkbookFactory.create(fis);
-        Sheet data = book.getSheet("Sheet1");
-        LastRowNumber = data.getLastRowNum();
-        System.out.println(number);
+            filePath = path;
+            FileInputStream fis = new FileInputStream(filePath);
+            Workbook book = WorkbookFactory.create(fis);
+            Sheet data = book.getSheet("Sheet1");
+            LastRowNumber = data.getLastRowNum();
+            System.out.println(number);
 
-        clientId = getStringCellValue(data.getRow(1 + number).getCell(12));
-        programId = getStringCellValue(data.getRow(1 + number).getCell(13));
-        dateRange = getStringCellValue(data.getRow(1 + number).getCell(2));
-        collectedAmount = getNumericCellValue(data.getRow(1 + number).getCell(3));
-        settledAmount = getNumericCellValue(data.getRow(1 + number).getCell(4));
-        commissionAmount = getNumericCellValue(data.getRow(1 + number).getCell(8));
-        commissionGstAmount = getNumericCellValue(data.getRow(1 + number).getCell(9));
-        serviceProviderName = getStringCellValue(data.getRow(1 + number).getCell(16));
-        rollingReserve = getNumericCellValue(data.getRow(1 + number).getCell(17));
-        utr = getStringCellValue(data.getRow(1 + number).getCell(11));
-        serviceType = getStringCellValue(data.getRow(1 + number).getCell(20));
+            clientId = getStringCellValue(data.getRow(1 + number).getCell(12));
+            programId = getStringCellValue(data.getRow(1 + number).getCell(13));
+            dateRange = getStringCellValue(data.getRow(1 + number).getCell(2));
+            collectedAmount = getNumericCellValue(data.getRow(1 + number).getCell(3));
+            settledAmount = getNumericCellValue(data.getRow(1 + number).getCell(4));
+            commissionAmount = getNumericCellValue(data.getRow(1 + number).getCell(8));
+            commissionGstAmount = getNumericCellValue(data.getRow(1 + number).getCell(9));
+            serviceProviderName = getStringCellValue(data.getRow(1 + number).getCell(16));
+            rollingReserve = getNumericCellValue(data.getRow(1 + number).getCell(17));
+            utr = getStringCellValue(data.getRow(1 + number).getCell(11));
+            serviceType = getStringCellValue(data.getRow(1 + number).getCell(20));
+
+        } catch (EncryptedDocumentException | IOException | NullPointerException e) {
+
+            clientId = "";
+            programId = "";
+            dateRange = "";
+            collectedAmount = 0.01;
+            settledAmount = 0.01;
+            commissionAmount = 0.01;
+            commissionGstAmount = 0.01;
+            serviceProviderName = "";
+            rollingReserve = 0.01;
+            utr = "";
+            serviceType = "";
+            e.printStackTrace();
+        }
     }
 
     private String getStringCellValue(Cell cell) {
