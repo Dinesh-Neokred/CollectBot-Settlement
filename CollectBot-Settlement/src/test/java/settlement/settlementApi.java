@@ -60,10 +60,10 @@ public class settlementApi extends login {
         // Creating Loop for Reading Multiple data and Creating Multiple Settlement
         for (int i = 0; i < LastRowNumber; i++) {
             // Importing Settlement Sheet For Reading Settlement Details
-            filePath = "D:\\New\\RestAssured\\data\\test.xlsx";
+            filePath = "C:\\Users\\Dinesh\\Downloads\\test.xlsx";
             fis = new FileInputStream(filePath);
             book = WorkbookFactory.create(fis);
-            data = book.getSheet("userID");
+            Sheet data = book.getSheetAt(0);
             LastRowNumber = data.getLastRowNum();
 
             // Generating Auth Token with collectbot Credentials

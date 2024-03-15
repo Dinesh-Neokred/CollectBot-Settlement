@@ -34,7 +34,7 @@ public class ReadingSettlementData {
             filePath = path;
             FileInputStream fis = new FileInputStream(filePath);
             Workbook book = WorkbookFactory.create(fis);
-            Sheet data = book.getSheet("Sheet1");
+            Sheet data = book.getSheetAt(0);
             LastRowNumber = data.getLastRowNum();
             System.out.println(number);
 
