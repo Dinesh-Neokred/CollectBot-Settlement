@@ -64,7 +64,7 @@ public class settlementApi extends login {
 
             logger.info("Processing data for row: " + i);
 
-            filePath = "C:\\Users\\Dinesh\\Downloads\\test.xlsx";
+            filePath = "C:\\Users\\Dinesh\\Downloads\\12.Fino Settlement 14th March-2024.xlsx";
             fis = new FileInputStream(filePath);
             book = WorkbookFactory.create(fis);
             Sheet data = book.getSheetAt(0);
@@ -148,7 +148,7 @@ public class settlementApi extends login {
 
                 logger.info("Calling Create Settlement API...");
                 Response createSettlementApi = requestPayload.when().get(baseUrl + "finance/settlement/record/create");
-                createSettlementApi.then().log().all();
+                // createSettlementApi.then().log().all();
                 logger.info("Create Settlement API response received.");
 
                 logger.info("Calling get Before DebitBalance Method...");
@@ -157,12 +157,9 @@ public class settlementApi extends login {
                 data.getRow(1 + i).getCell(15).setCellValue(aftereDebitBalance);
 
                 String settlementMessage = createSettlementApi.jsonPath().getString("message");
-                System.out.println();
-                System.out.println(settlementMessage + "    <================settlementMessage=============>");
-                System.out.println();
 
                 String response = createSettlementApi.jsonPath().getString("message");
-                logger.info("Storing Revenue API response received In Excel");
+                logger.info("Storing Settlement API response received In Excel");
                 data.getRow(1 + i).getCell(18).setCellValue(response);
 
                 if (settlementMessage.equalsIgnoreCase("Settlement record created successfully")) {
@@ -186,7 +183,7 @@ public class settlementApi extends login {
                     logger.info("Calling Create Revenue API...");
                     Response createRevenueApi = requestPayloadforRevenue.when()
                             .get(baseUrl + "finance/revenue/record/create");
-                    createRevenueApi.then().log().all();
+                    // createRevenueApi.then().log().all();
                     logger.info("Create Revenue API response received.");
 
                     String createRevenueResponse = createRevenueApi.jsonPath().getString("message");
