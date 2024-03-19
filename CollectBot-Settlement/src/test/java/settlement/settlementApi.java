@@ -36,7 +36,7 @@ public class settlementApi extends login {
     @Test
     public void createSettlement() throws EncryptedDocumentException, IOException {
         logger.info("Starting createSettlement method...");
-        baseUrlForClass url = new baseUrlForClass();
+        BaseUrlForClass url = new BaseUrlForClass();
         String envFilePath = "./.env";
 
         Properties properties = new Properties();

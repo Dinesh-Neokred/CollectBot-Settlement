@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 import io.restassured.specification.RequestSpecification;
 
 public class ReadAndWriteBeforeSettlememtBalance extends login {
-        baseUrlForClass url = new baseUrlForClass();
+        BaseUrlForClass url = new BaseUrlForClass();
         String baseUrl = url.coreBaseUrl;
 
         @Test

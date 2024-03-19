@@ -33,7 +33,7 @@ public class ReadingSettlementData {
     @Test
     public void setSettlementData(int number, String path) throws EncryptedDocumentException, IOException {
         try {
-            baseUrlForClass url = new baseUrlForClass();
+            BaseUrlForClass url = new BaseUrlForClass();
             String baseUrl = url.coreBaseUrl;
 
             filePath = path;

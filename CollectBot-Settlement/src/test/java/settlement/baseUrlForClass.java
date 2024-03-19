@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-public class baseUrlForClass {
+public class BaseUrlForClass {
 
     // String coreBaseUrl =
     // "http://qa-collectbot.neokred.tech:9080/core-svc/api/v1/";

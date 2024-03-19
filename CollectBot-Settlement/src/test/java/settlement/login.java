@@ -11,7 +11,7 @@ public class login {
 
     // @Test(priority = 0)
     public String getAuth(String email, String pass) {
-        baseUrlForClass url = new baseUrlForClass();
+        BaseUrlForClass url = new BaseUrlForClass();
         String UserBaseUrl = url.userBaseUrl;
 
         JSONObject data = new JSONObject();

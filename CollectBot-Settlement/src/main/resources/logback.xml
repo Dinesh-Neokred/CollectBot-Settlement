@@ -1,0 +1,28 @@
+<configuration>
+
+    <!-- STDOUT appender configuration -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- FILE appender configuration -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>C:/Users/Dinesh/Downloads/13.Fino Settlement 15th to 17th March-2024/settlementApi.log</file> <!-- Specify the absolute path and filename for the log file -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Configure the logger for your class -->
+    <logger name="settlementApi" level="INFO">
+        <appender-ref ref="FILE"/> <!-- Direct INFO-level logs to the FILE appender -->
+        <appender-ref ref="STDOUT"/> <!-- Also direct INFO-level logs to the STDOUT appender for visibility in the console -->
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/> <!-- Direct all log levels to the STDOUT appender -->
+    </root>
+
+</configuration>
