@@ -1,0 +1,5 @@
+# Created at 2024-10-04T17:20:54.228
+Boot Manifest-JAR contains absolute paths in classpath 'D:\Dinesh Lap Backup\New\CollectBot-Settlement\CollectBot-Settlement\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

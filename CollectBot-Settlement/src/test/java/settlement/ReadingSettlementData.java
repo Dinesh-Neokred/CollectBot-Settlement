@@ -29,6 +29,8 @@ public class ReadingSettlementData {
     public String programId;
     public String clientId;
     public String filePath;
+    public double chargeBackHold;
+    public double chargeBackRelease;
 
     @Test
     public void setSettlementData(int number, String path) throws EncryptedDocumentException, IOException {
@@ -75,7 +77,11 @@ public class ReadingSettlementData {
             logger.warn("Accessing serviceType value from Excel");
             serviceType = getStringCellValue(data.getRow(1 + number).getCell(20));
 
-            logger.warn("Accessing value from Excel");
+            logger.warn("Accessing chargeBackHold value from Excel");
+            chargeBackHold = getNumericCellValue(data.getRow(3 + number).getCell(11));
+
+            logger.warn("Accessing chargeBackRelease value from Excel");
+            chargeBackRelease = getNumericCellValue(data.getRow(3 + number).getCell(15));
 
         } catch (EncryptedDocumentException | IOException | NullPointerException e) {
             logger.warn("Inside catch BLock of ReadingSettlementData class");

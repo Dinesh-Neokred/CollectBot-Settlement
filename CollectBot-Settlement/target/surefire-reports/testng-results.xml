@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2024-10-04T17:20:55 IST" name="Surefire suite" finished-at="2024-10-04T17:20:58 IST" duration-ms="3623">
+    <groups>
+    </groups>
+    <test started-at="2024-10-04T17:20:55 IST" name="Surefire test" finished-at="2024-10-04T17:20:58 IST" duration-ms="3623">
+      <class name="settlement.TransactionUpdate">
+        <test-method signature="statusUpdate() throws org.apache.poi.EncryptedDocumentException,java.io.IOException" started-at="2024-10-04T17:20:55 IST" name="statusUpdate" finished-at="2024-10-04T17:20:58 IST" duration-ms="3545" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- statusUpdate -->
+      </class> <!-- settlement.TransactionUpdate -->
+    </test> <!-- Surefire test -->
+  </suite> <!-- Surefire suite -->
+</testng-results>

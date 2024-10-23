@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Properties;
 import javax.mail.internet.AddressException;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,6 +17,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.testng.annotations.Test;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import utils.ConfigLoader;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,21 +38,11 @@ public class settlementApi extends login {
     public void createSettlement() throws EncryptedDocumentException, IOException {
         logger.info("Starting createSettlement method...");
         BaseUrlForClass url = new BaseUrlForClass();
-        String envFilePath = "./.env";
 
-        Properties properties = new Properties();
-        try (FileInputStream fis = new FileInputStream(envFilePath)) {
-            properties.load(fis);
-        } catch (IOException e) {
-            logger.error("An error occurred: " + e.getMessage(), e);
-            e.printStackTrace();
-            return; // Exit if unable to load properties
-        }
-
-        String mail = properties.getProperty("email");
-        String mailPassword = properties.getProperty("password");
-        String mailForCB = properties.getProperty("cbMail");
-        String cbPassword = properties.getProperty("cbPassword");
+        String mail = ConfigLoader.getEmail();
+        String mailPassword = ConfigLoader.getMailPassword();
+        String mailForCB = ConfigLoader.getEmailForCollectBot();
+        String cbPassword = ConfigLoader.getPasswordForCollectbot();
         String baseUrl = url.coreBaseUrl;
 
         ReadingSettlementData settlementDate = new ReadingSettlementData();
@@ -64,7 +55,7 @@ public class settlementApi extends login {
 
             logger.info("Processing data for row: " + i);
 
-            filePath = "C:\\Users\\Dinesh\\Downloads\\15.Fino Settlement 19th March-2024.xlsx";
+            filePath = "C:\\Users\\Dinesh M\\Downloads\\23.Fino Settlement for 23rd April-2024.xlsx";
             fis = new FileInputStream(filePath);
             book = WorkbookFactory.create(fis);
             Sheet data = book.getSheetAt(0);
@@ -86,38 +77,38 @@ public class settlementApi extends login {
             String servicetype = settlementDate.serviceType.toLowerCase();
 
             if (clientId.isEmpty()) {
-                logger.warn("clientId is empty, exiting loop.");
-                break;
+                logger.warn("clientId is empty, Executting Next Line.");
+                continue;
             } else if (programId.isEmpty()) {
-                logger.warn("programId is empty, exiting loop.");
-                break;
+                logger.warn("programId is empty, Executting Next Line.");
+                continue;
             } else if (dateRange.isEmpty()) {
-                logger.warn("dateRange is empty, exiting loop.");
-                break;
+                logger.warn("dateRange is empty, Executting Next Line.");
+                continue;
             } else if (collectedAmount == 0.1) {
-                logger.warn("collectedAmount is empty, exiting loop.");
-                break;
+                logger.warn("collectedAmount is empty, Executting Next Line.");
+                continue;
             } else if (settledAmount == 0.1) {
-                logger.warn("settledAmount is empty, exiting loop.");
-                break;
+                logger.warn("settledAmount is empty, Executting Next Line.");
+                continue;
             } else if (commissionAmount == 0.1) {
-                logger.warn("commissionAmount is empty, exiting loop.");
-                break;
+                logger.warn("commissionAmount is empty, Executting Next Line.");
+                continue;
             } else if (commissionGstAmount == 0.1) {
-                logger.warn("commissionGstAmount is empty, exiting loop.");
-                break;
+                logger.warn("commissionGstAmount is empty, Executting Next Line.");
+                continue;
             } else if (rollingReserve == 0.1) {
-                logger.warn("rollingReserve is empty, exiting loop.");
-                break;
+                logger.warn("rollingReserve is empty, Executting Next Line.");
+                continue;
             } else if (utr.isEmpty()) {
-                logger.warn("utr is empty, exiting loop.");
-                break;
+                logger.warn("utr is empty, Executting Next Line.");
+                continue;
             } else if (serviceProviderName.isEmpty()) {
-                logger.warn("serviceProviderName is empty, exiting loop.");
-                break;
+                logger.warn("serviceProviderName is empty, Executting Next Line.");
+                continue;
             } else if (servicetype.isEmpty()) {
-                logger.warn("servicetype is empty, exiting loop.");
-                break;
+                logger.warn("servicetype is empty, Executting Next Line.");
+                continue;
             }
 
             if (settledAmount >= 1) {
@@ -134,37 +125,42 @@ public class settlementApi extends login {
                         .header("utr", utr)
                         .header("reserves", rollingReserve)
                         .header("serviceProviderName", serviceProviderName)
-                        // .header("servicetype", "Payin")
-                        .header("servicetype", servicetype);
+                        .header("servicetype", servicetype)
+                        .header("chargebackRelease", 0)
+                        .header("chargebackHold", 0)
                 // .log().all()
                 ;
-                logger.info("Settlement Record Create API Request====>" + requestPayload.log().all());
-                logger.info("Calling get Before DebitBalance Method...");
+                // logger.info("Settlement Record Create API Request====>" +
+                // requestPayload.log().all());
+                logger.info("Calling get Before DebitBalance Method..." + utr + " ");
 
                 double beforeDebitBalance = Balance.getBeforeDebitBalance(clientId, auth);
 
-                logger.info("Storing Before DebitBalance In Excel...");
+                logger.info("Storing Before DebitBalance In Excel..." + utr + " ");
                 data.getRow(1 + i).getCell(14).setCellValue(beforeDebitBalance);
 
-                logger.info("Calling Create Settlement API...");
+                logger.info("Calling Create Settlement API..." + utr + " ");
                 Response createSettlementApi = requestPayload.when().get(baseUrl + "finance/settlement/record/create");
                 // createSettlementApi.then().log().all();
-                logger.info("Create Settlement API response received.");
-                logger.info("Settlement Record Create API Response====>" + createSettlementApi.then().log().all());
+                logger.info("Create Settlement API response received." + utr + " ");
+                logger.info(
+                        "Settlement Record Create API Response====>" + utr + " "
+                                + createSettlementApi.then().log().all());
 
-                logger.info("Calling get Before DebitBalance Method...");
+                logger.info("Calling get Before DebitBalance Method..." + utr + " ");
                 double aftereDebitBalance = Balance.getAfterDebitBalance(clientId, auth);
-                logger.info("Storing After DebitBalance In Excel...");
+                logger.info("Storing After DebitBalance In Excel..." + utr + " ");
                 data.getRow(1 + i).getCell(15).setCellValue(aftereDebitBalance);
 
                 String settlementMessage = createSettlementApi.jsonPath().getString("message");
 
                 String response = createSettlementApi.jsonPath().getString("message");
-                logger.info("Storing Settlement API response received In Excel");
+                logger.info("Storing Settlement API response received In Excel" + utr + " ");
                 data.getRow(1 + i).getCell(18).setCellValue(response);
 
                 if (settlementMessage.equalsIgnoreCase("Settlement record created successfully")) {
-                    logger.info("Settlement record created successfully, proceeding with Revenue API call.");
+                    logger.info(
+                            "Settlement record created successfully, proceeding with Revenue API call." + utr + " ");
 
                     RequestSpecification requestPayloadforRevenue = given()
                             // .log().all()
@@ -181,21 +177,23 @@ public class settlementApi extends login {
                             // .header("servicetype", "Payin");
                             .header("servicetype", servicetype);
 
-                    logger.info("Calling Create Revenue API...");
-                    logger.info("Revenue Record Create API Request====>" + requestPayloadforRevenue.log().all());
+                    logger.info("Calling Create Revenue API..." + utr + " ");
+                    // logger.info("Revenue Record Create API Request====>" +
+                    // requestPayloadforRevenue.log().all());
                     Response createRevenueApi = requestPayloadforRevenue.when()
                             .get(baseUrl + "finance/revenue/record/create");
                     // createRevenueApi.then().log().all();
-                    logger.info("Create Revenue API response received.");
-                    logger.info("Revenue Record Create API Response====>" + createRevenueApi.then().log().all());
+                    logger.info("Create Revenue API response received." + utr + " ");
+                    logger.info("Revenue Record Create API Response====>" + utr + " "
+                            + createRevenueApi.then().log().all());
 
                     String createRevenueResponse = createRevenueApi.jsonPath().getString("message");
-                    logger.info("Storing Revenue API response received In Excel");
+                    logger.info("Storing Revenue API response received In Excel" + utr + " ");
                     data.getRow(1 + i).getCell(19).setCellValue(createRevenueResponse);
                 }
 
             }
-            logger.info("Settlement processing completed.");
+            logger.info("Settlement processing completed." + utr + " ");
             FileOutputStream fos = new FileOutputStream(filePath);
             book.write(fos);
             book.close();
