@@ -32,7 +32,7 @@ public class TransactionUpdate {
     public void statusUpdate() throws EncryptedDocumentException, IOException {
         logger.info("Starting status update process.");
 
-        String filePath = "C:\\Users\\Dinesh M\\Downloads\\03th Oct.xlsx"; // Update the path
+        String filePath = "/Users/Dinesh/Downloads/Some status pendinf updated.xlsx"; // Update the path
                                                                            // accordingly
 
         // Try-with-resources to ensure proper closure of resources
